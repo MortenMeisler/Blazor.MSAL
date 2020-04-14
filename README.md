@@ -1,4 +1,4 @@
-# Blazor MSAL (with Azure DevOps)
+# Blazor MSAL with Azure DevOps API
 This is a sample project showing how to configure MSAL Authentication in Blazor WebAssembly against Azure DevOps API
 
 ## Setup

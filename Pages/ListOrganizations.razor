@@ -1,0 +1,59 @@
+﻿@page "/listorganizations"
+@inject AzureDevOpsClient azureDevOpsClient
+<h1>Azure DevOps Organizations</h1>
+
+
+@if (organizations == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView>
+        <NotAuthorized>
+            <p>User not authorized</p>
+        </NotAuthorized>
+        <Authorized>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var org in organizations)
+                    {
+                        <tr>
+                            <td>@org.AccountName</td>
+                            <td>@org.AccountId</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </Authorized>
+        </AuthorizeView>
+         
+            }
+
+            @code {
+        [CascadingParameter]
+            private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+            private IEnumerable<AzureDevOpsOrganization> organizations;
+
+            protected override async Task OnInitializedAsync()
+            {
+                var authState = await authenticationStateTask;
+                var user = authState.User;
+
+                // Get profile picture
+                if (user.Identity.IsAuthenticated)
+                {
+                    organizations = await azureDevOpsClient.ListAzureDevOpsOrganizations();
+                }
+
+
+            }
+            }

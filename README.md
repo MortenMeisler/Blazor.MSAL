@@ -22,7 +22,7 @@ And from my Azure App:
 
 ![alt text](https://github.com/MortenMeisler/Blazor.MSAL/blob/master/appreg.png)
 
-Make sure to replace the tags with your client and tenant id in Program.cs
+Make sure to replace with your client and tenant id in Program.cs
 
 ```
  builder.Services.AddMsalAuthentication(options =>

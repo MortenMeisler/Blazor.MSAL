@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Blazor.MSAL.Models;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Blazor.MSAL.Services
 {
@@ -57,6 +59,39 @@ namespace Blazor.MSAL.Services
             }
         }
 
+        public async Task<IEnumerable<AzureDevOpsOrganization>> ListAzureDevOpsOrganizations2()
+        {
+            var token = await GetDevOpsToken();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://app.vssps.visualstudio.com/_apis/accounts");
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Headers.TryAddWithoutValidation("User-Agent", "Blazor.MSAL");
+            request.Headers.TryAddWithoutValidation("X-TFS-FedAuthRedirect", "Suppress");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            if (response.IsSuccessStatusCode)
+            {
+                
+                try
+                {
+                    return await response.Content.ReadFromJsonAsync<IEnumerable<AzureDevOpsOrganization>>();
+                }
+                catch (NotSupportedException ex) // When content type is not valid
+                {
+                    Console.WriteLine($"The content type is not supported. Exception: {ex.Message}");
+                }
+                catch (JsonException ex) // Invalid JSON
+                {
+                    Console.WriteLine($"Invalid JSON. Exception: {ex.Message}");
+                }
+            }
+
+            return null;
+        }
+            
         public async Task<IEnumerable<AzureDevOpsOrganization>> ListAzureDevOpsOrganizations()
         {
             var token = await GetDevOpsToken();

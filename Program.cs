@@ -21,7 +21,7 @@ namespace Blazor.MSAL
                 var authentication = options.ProviderOptions.Authentication;
 
                 // Tenant Id
-               authentication.Authority = "https://login.microsoftonline.com/{yourtenantid}";
+                authentication.Authority = "https://login.microsoftonline.com/{yourtenantid}";
 
                 // Application / Client Id
                 authentication.ClientId = "{yourclientid}";

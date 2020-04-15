@@ -50,7 +50,6 @@ namespace Blazor.MSAL.Services
                     //It works anyway, called again.
 
                 }
-
                 return token;
             }
             else
@@ -59,10 +58,11 @@ namespace Blazor.MSAL.Services
             }
         }
 
-        public async Task<IEnumerable<AzureDevOpsOrganization>> ListAzureDevOpsOrganizations2()
+        public async Task<IEnumerable<AzureDevOpsOrganization>> ListAzureDevOpsOrganizations()
         {
             var token = await GetDevOpsToken();
 
+           
             var request = new HttpRequestMessage(HttpMethod.Get, "https://app.vssps.visualstudio.com/_apis/accounts");
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -71,7 +71,6 @@ namespace Blazor.MSAL.Services
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
 
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
             if (response.IsSuccessStatusCode)
             {
                 
@@ -88,45 +87,17 @@ namespace Blazor.MSAL.Services
                     Console.WriteLine($"Invalid JSON. Exception: {ex.Message}");
                 }
             }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                Console.WriteLine($"Unauthorized: {response.ReasonPhrase}");
+                throw new UnauthorizedAccessException(response.ReasonPhrase);
+                
+            }
 
             return null;
         }
             
-        public async Task<IEnumerable<AzureDevOpsOrganization>> ListAzureDevOpsOrganizations()
-        {
-            var token = await GetDevOpsToken();
-           
-            // Headers
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Blazor.MSAL");
-            _httpClient.DefaultRequestHeaders.Add("X-TFS-FedAuthRedirect", "Suppress");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
-
-            //Get Organizations - simple
-            return await _httpClient.GetJsonAsync<IEnumerable<AzureDevOpsOrganization>>("https://app.vssps.visualstudio.com/_apis/accounts");
-            
-            //Get Organizations - more errorhandling
-           
-            HttpResponseMessage response = await _httpClient.GetAsync("https://app.vssps.visualstudio.com/_apis/accounts");
-
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("\tSuccesful REST call");
-                var result = response.Content.ReadAsStringAsync().Result;
-                //Deserialize result and return
-            }
-            else if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedAccessException();
-                return null;
-            }
-            else
-            {
-                Console.WriteLine("{0}:{1}", response.StatusCode, response.ReasonPhrase);
-                return null;
-            }
-        }
+        
     }
 }
 

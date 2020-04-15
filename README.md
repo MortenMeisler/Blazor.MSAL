@@ -35,5 +35,6 @@ Make sure to replace with your client and tenant id in Program.cs
                 // Application / Client Id
                 authentication.ClientId = "{yourclientid}";
             });
-            ```
+```
+
 This should of course be retrieved from appsettings.json, but IConfiguration is not working yet from program.cs. Expected to be released in next preview.           

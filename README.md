@@ -22,3 +22,19 @@ And from my Azure App:
 
 ![alt text](https://github.com/MortenMeisler/Blazor.MSAL/blob/master/appreg.png)
 
+Make sure to replace with your client and tenant id in Program.cs
+
+```
+ builder.Services.AddMsalAuthentication(options =>
+            {
+                var authentication = options.ProviderOptions.Authentication;
+
+                // Tenant Id
+                authentication.Authority = "https://login.microsoftonline.com/{yourtenantid}";
+
+                // Application / Client Id
+                authentication.ClientId = "{yourclientid}";
+            });
+```
+
+This should of course be retrieved from appsettings.json, but IConfiguration is not working yet from program.cs. Expected to be released in next preview.           

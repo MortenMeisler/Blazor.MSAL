@@ -32,7 +32,8 @@ namespace Blazor.MSAL.Services
         /// <returns></returns>
         public async Task<AccessToken> GetDevOpsToken()
         {
-           var tokenResult = await _authenticationService.RequestAccessToken(
+           
+            var tokenResult = await _authenticationService.RequestAccessToken(
            new AccessTokenRequestOptions
            {
                //Azure Devops default scope - constant, do not change.
@@ -43,6 +44,7 @@ namespace Blazor.MSAL.Services
 
             if (tokenResult.TryGetToken(out var token))
             {
+               
                 if (token == null)
                 {
                     //Issue when running in debug: https://github.com/dotnet/aspnetcore/issues/19998
@@ -50,6 +52,7 @@ namespace Blazor.MSAL.Services
                     //It works anyway, called again.
 
                 }
+                
                 return token;
             }
             else

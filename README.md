@@ -18,23 +18,30 @@ var tokenResult = await _authenticationService.RequestAccessToken(
            });
 ```
 
-And from my Azure App:
+### Added in Azure App Registration to test:
 
 ![alt text](https://github.com/MortenMeisler/Blazor.MSAL/blob/master/appreg.png)
 
-Make sure to replace with your client and tenant id in Program.cs
+- Authentication redirect URis: https://localhost:5001
+- Implicit grant: Access Token, ID Tokens
+- Treat application as a public client: Yes
+
+
+### Appsettings.json:
+Make sure to replace with your client and tenant id in appsettings.json (located in the wwwroot folder)
 
 ```
- builder.Services.AddMsalAuthentication(options =>
-            {
-                var authentication = options.ProviderOptions.Authentication;
-
-                // Tenant Id
-                authentication.Authority = "https://login.microsoftonline.com/{yourtenantid}";
-
-                // Application / Client Id
-                authentication.ClientId = "{yourclientid}";
-            });
+{
+  "AzureAd": {
+    "Authority": "https://login.microsoftonline.com/{yourtenantid}",
+    "ClientId": "{yourclientid}",
+    "ValidateAuthority": true
+  }
+}
 ```
 
-This should of course be retrieved from appsettings.json, but IConfiguration is not working yet from program.cs. Expected to be released in next preview.           
+
+
+
+
+
